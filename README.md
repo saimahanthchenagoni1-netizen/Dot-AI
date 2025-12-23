@@ -1,11 +1,23 @@
-<div align="center">
 
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+# DOT AI
 
-  <h1>Built with AI Studio</h2>
+A sleek, professional, and helpful AI assistant created by **SAI**.
 
-  <p>The fastest path from prompt to production with Gemini.</p>
+## Features
 
-  <a href="https://aistudio.google.com/apps">Start building</a>
+- **Personalized Chat**: Context-aware conversations with persistent memory.
+- **Image Generation**: Built-in text-to-image capabilities powered by Google Gemini.
+- **Voice Interaction**: Integrated voice typing for hands-free queries.
+- **History Memory**: Local persistence of your chat history.
+- **Pro Mode**: Toggle between speed and deep intelligence.
+- **Modern UI**: Minimalist black-and-white aesthetic with fluid animations.
 
-</div>
+## Deployment
+
+### Vercel
+1. Connect this repository to Vercel.
+2. Set the Environment Variable `API_KEY` to your Google Gemini API key in the Vercel dashboard.
+3. Deploy!
+
+## Built By
+**SAI**

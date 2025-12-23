@@ -1,0 +1,8 @@
+{
+  "name": "DOT Intelligence",
+  "description": "An open-source, AI-powered daily academic assistant focusing on understanding, concept mastery, and open community learning. Features AI homework solving, smart note-taking, and personalized learning paths.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}

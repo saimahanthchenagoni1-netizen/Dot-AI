@@ -1,0 +1,129 @@
+
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOT AI | Your Personal Assistant</title>
+    <meta name="description" content="DOT AI - A simple, professional, and helpful AI assistant created by SAI.">
+    
+    <!-- Favicon: White rounded square with a black dot -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='25' fill='white'/><circle cx='50' cy='50' r='12.5' fill='black'/></svg>">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-mesh-opacity: 0.3;
+            --bg-hue-shift: 0deg;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #000000;
+            color: #ffffff;
+            margin: 0;
+            overflow: hidden;
+            scroll-behavior: smooth;
+        }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
+        
+        .parallax-wrapper {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            overflow: hidden;
+            perspective: 1000px;
+        }
+        .mesh-layer {
+            position: absolute;
+            inset: -50%;
+            width: 200%;
+            height: 200%;
+            filter: blur(100px);
+            opacity: var(--bg-mesh-opacity);
+            transition: opacity 1.5s ease;
+        }
+        .mesh-1 {
+            background: radial-gradient(circle at 30% 30%, hsla(var(--bg-hue-shift), 70%, 50%, 0.1), transparent 50%);
+            animation: mesh-rotate 40s linear infinite;
+        }
+        .mesh-2 {
+            background: radial-gradient(circle at 70% 70%, hsla(calc(var(--bg-hue-shift) + 120deg), 70%, 50%, 0.08), transparent 50%);
+            animation: mesh-rotate 35s linear infinite reverse;
+        }
+        
+        @keyframes mesh-rotate {
+            from { transform: rotate(0deg) translateZ(-50px); }
+            to { transform: rotate(360deg) translateZ(-50px); }
+        }
+
+        .reveal-item {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s cubic-bezier(0.2, 1, 0.3, 1);
+        }
+        .reveal-item.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .text-gradient {
+            background: linear-gradient(135deg, #fff 0%, #777 50%, #fff 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: text-shine 8s linear infinite;
+        }
+        @keyframes text-shine {
+            to { background-position: 200% center; }
+        }
+
+        .hover-card {
+            transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .hover-card:hover {
+            transform: translateY(-4px);
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .animate-float { animation: float 6s ease-in-out infinite; }
+
+        @keyframes reveal {
+            from { opacity: 0; transform: translate(-50%, 20px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
+        }
+        .animate-reveal { animation: reveal 1s cubic-bezier(0.2, 1, 0.3, 1) forwards; }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react-router-dom": "https://esm.sh/react-router-dom@^7.11.0",
+    "@google/genai": "https://esm.sh/@google/genai@^1.34.0",
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0"
+  }
+}
+</script>
+</head>
+<body class="no-scrollbar bg-black">
+    <div class="parallax-wrapper">
+        <div class="mesh-layer mesh-1"></div>
+        <div class="mesh-layer mesh-2"></div>
+    </div>
+    <div id="root"></div>
+    <script type="module" src="index.tsx"></script>
+</body>
+</html>
