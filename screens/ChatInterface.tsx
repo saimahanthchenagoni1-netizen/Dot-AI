@@ -152,14 +152,8 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
     const text = (overrideInput || input).trim();
     if (!text && !image) return;
 
-    // Safety check for API key
     const apiKey = process.env.API_KEY;
-    if (!apiKey) {
-      setMessages(prev => [...prev, { id: 'err', role: 'ai', text: "API Key is missing. Please set API_KEY in your environment.", timestamp: new Date().toISOString() }]);
-      return;
-    }
-
-    const ai = new GoogleGenAI({ apiKey });
+    const ai = new GoogleGenAI({ apiKey: apiKey || "" });
     setViewMode('chat');
     const userMsg: Message = {
       id: Date.now().toString(),
@@ -221,7 +215,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
       }
     } catch (error) {
       console.error(error);
-      setMessages(prev => [...prev, { id: 'err', role: 'ai', text: "Something went wrong. Please check your connection or API key.", timestamp: new Date().toISOString() }]);
+      setMessages(prev => [...prev, { id: 'err', role: 'ai', text: "Something went wrong. Please check your connection or ensure API_KEY is set in Vercel.", timestamp: new Date().toISOString() }]);
     } finally {
       setLoading(false);
     }

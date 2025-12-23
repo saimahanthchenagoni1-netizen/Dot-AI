@@ -10,11 +10,10 @@ import {
   Lightbulb,
   Loader2,
   Trash2,
-  BrainCircuit,
   MessageCircleQuestion
 } from 'lucide-react';
-import { solveProblem } from '../geminiService';
-import { StudentLevel, AskMode, AIResponse } from '../types';
+import { solveProblem } from '../geminiService.ts';
+import { StudentLevel, AskMode, AIResponse } from '../types.ts';
 
 export const AskAI: React.FC = () => {
   const [input, setInput] = useState('');

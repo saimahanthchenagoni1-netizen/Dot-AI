@@ -3,8 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { 
   FileText, Upload, Trash2, MessageSquare, Sparkles, Plus, Loader2, ArrowRight
 } from 'lucide-react';
-import { chatWithNotebook } from '../geminiService';
-import { NoteDocument } from '../types';
+import { chatWithNotebook } from '../geminiService.ts';
+import { NoteDocument } from '../types.ts';
 
 export const Notebook: React.FC = () => {
   const [docs, setDocs] = useState<NoteDocument[]>([]);

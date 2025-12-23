@@ -1,8 +1,6 @@
 
 import { GoogleGenAI, Type } from "@google/genai";
-import { StudentLevel, AskMode } from "./types";
-
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+import { StudentLevel, AskMode } from "./types.ts";
 
 export async function solveProblem(
   prompt: string,
@@ -10,6 +8,7 @@ export async function solveProblem(
   mode: AskMode,
   imageData?: string
 ) {
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const model = "gemini-3-pro-preview";
   
   const systemInstruction = `
@@ -23,6 +22,7 @@ export async function solveProblem(
     - Fields: "steps" (array of strings), "explanation" (string), "whyItMatters" (string), "alternativeMethod" (string, optional).
     - Use clear, professional yet accessible language.
     - If math is involved, use markdown formatting.
+    - If asked who created you, always say SAI.
   `;
 
   const contents: any[] = [{ text: prompt }];
@@ -58,8 +58,9 @@ export async function solveProblem(
 }
 
 export async function chatWithNotebook(query: string, context: string) {
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const model = "gemini-3-flash-preview";
-  const systemInstruction = "You are DOT. Answer questions strictly based on the provided notes. Be concise and helpful.";
+  const systemInstruction = "You are DOT. Answer questions strictly based on the provided notes. Be concise and helpful. You were created by SAI.";
   const response = await ai.models.generateContent({
     model,
     contents: `Notes Context: ${context}\n\nQuestion: ${query}`,
@@ -69,6 +70,7 @@ export async function chatWithNotebook(query: string, context: string) {
 }
 
 export async function suggestTasks(currentGoal: string) {
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const model = "gemini-3-flash-preview";
   const prompt = `Based on this goal: "${currentGoal}", suggest 3 specific study tasks. Return as JSON array with title, subject, duration, and priority (low, medium, high).`;
   

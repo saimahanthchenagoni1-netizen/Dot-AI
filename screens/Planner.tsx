@@ -1,8 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { Calendar, CheckCircle2, Circle, Clock, Plus, Sparkles, Loader2, Trash2 } from 'lucide-react';
-import { suggestTasks } from '../geminiService';
-import { Task } from '../types';
+import { suggestTasks } from '../geminiService.ts';
+import { Task } from '../types.ts';
 
 export const Planner: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
