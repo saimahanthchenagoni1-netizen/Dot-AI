@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
-import { Onboarding } from './screens/Onboarding';
-import { ChatInterface } from './screens/ChatInterface';
+import { Onboarding } from './screens/Onboarding.tsx';
+import { ChatInterface } from './screens/ChatInterface.tsx';
 
 const App: React.FC = () => {
   const [userName, setUserName] = useState<string>('');
@@ -21,7 +21,13 @@ const App: React.FC = () => {
     if (savedName) setUserName(savedName);
     if (savedAvatar) setUserAvatar(savedAvatar);
     if (introComplete === 'true') setIsIntroComplete(true);
-    if (savedSettings) setSettings(JSON.parse(savedSettings));
+    if (savedSettings) {
+      try {
+        setSettings(JSON.parse(savedSettings));
+      } catch (e) {
+        console.error("Failed to parse settings", e);
+      }
+    }
   }, []);
 
   const handleIntroComplete = (name: string) => {
