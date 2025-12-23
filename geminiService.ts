@@ -12,7 +12,7 @@ export async function solveProblem(
   const model = "gemini-3-pro-preview";
   
   const systemInstruction = `
-    You are DOT, an elite open-source AI tutor. 
+    You are DOT, an elite open-source AI tutor created by SAI. 
     Your goal is to help students UNDERSTAND, not just get the answer.
     User Level: ${level}
     Explanation Style: ${mode}

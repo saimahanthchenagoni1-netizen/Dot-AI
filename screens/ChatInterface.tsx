@@ -2,7 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { 
   Send, Camera, X, Mic, Plus, Home, History, User, Settings as SettingsIcon, 
-  PenTool, Image as ImageIcon, Trash2, MessageSquare, Clock, Brain, Lightbulb, Code, Globe
+  PenTool, Image as ImageIcon, Trash2, MessageSquare, Clock, Brain, Lightbulb, Code, Globe, ExternalLink
 } from 'lucide-react';
 import { GoogleGenAI } from "@google/genai";
 
@@ -12,6 +12,7 @@ interface Message {
   text: string;
   image?: string;
   timestamp: string;
+  sources?: { uri: string; title: string }[];
 }
 
 type ViewMode = 'home' | 'chat' | 'history' | 'profile' | 'settings';
@@ -152,8 +153,9 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
     const text = (overrideInput || input).trim();
     if (!text && !image) return;
 
-    const apiKey = process.env.API_KEY;
-    const ai = new GoogleGenAI({ apiKey: apiKey || "" });
+    // Direct initialization from environment
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    
     setViewMode('chat');
     const userMsg: Message = {
       id: Date.now().toString(),
@@ -170,6 +172,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
 
     try {
       const imageTrigger = /^(create|draw|generate|make|show me) (an |a )?(image|picture|drawing|sketch)/i;
+      
       if (imageTrigger.test(text)) {
         const response = await ai.models.generateContent({
           model: 'gemini-2.5-flash-image',
@@ -200,22 +203,47 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
           contents.push({ inlineData: { mimeType: 'image/jpeg', data: userMsg.image.split(',')[1] } });
         }
 
+        const config: any = { systemInstruction };
+
+        // Handle specific AI modes
+        if (aiMode === 'web') {
+          config.tools = [{ googleSearch: {} }];
+        } else if (aiMode === 'reasoning') {
+          config.thinkingConfig = { thinkingBudget: 4000 };
+        }
+
         const response = await ai.models.generateContent({
           model,
           contents: { parts: contents },
-          config: { systemInstruction }
+          config
         });
+
+        let aiSources: { uri: string; title: string }[] = [];
+        if (aiMode === 'web') {
+          const chunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks;
+          if (chunks) {
+            aiSources = chunks
+              .filter((c: any) => c.web)
+              .map((c: any) => ({ uri: c.web.uri, title: c.web.title }));
+          }
+        }
 
         setMessages(prev => [...prev, {
           id: (Date.now() + 1).toString(),
           role: 'ai',
           text: response.text || "I'm looking into that...",
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
+          sources: aiSources.length > 0 ? aiSources : undefined
         }]);
       }
     } catch (error) {
-      console.error(error);
-      setMessages(prev => [...prev, { id: 'err', role: 'ai', text: "Something went wrong. Please check your connection or ensure API_KEY is set in Vercel.", timestamp: new Date().toISOString() }]);
+      console.error("AI Request Failed:", error);
+      setMessages(prev => [...prev, { 
+        id: 'err', 
+        role: 'ai', 
+        text: "I encountered an issue processing your request. Please ensure your API key is correctly configured in your deployment environment.", 
+        timestamp: new Date().toISOString() 
+      }]);
     } finally {
       setLoading(false);
     }
@@ -289,12 +317,21 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
                     </div>
                     {msg.image && (
                       <div className="relative group/img max-w-lg mb-4 mt-2">
-                        <img src={msg.image} className="rounded-3xl border border-white/5 shadow-2xl" />
+                        <img src={msg.image} className="rounded-3xl border border-white/5 shadow-2xl" alt="Content" />
                       </div>
                     )}
                     <div className={`text-[17px] leading-relaxed font-semibold tracking-tight ${msg.role === 'user' ? 'text-zinc-100' : 'text-zinc-300'}`}>
                       {msg.text}
                     </div>
+                    {msg.sources && (
+                      <div className="pt-4 flex flex-wrap gap-2">
+                        {msg.sources.map((src, i) => (
+                          <a key={i} href={src.uri} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-white/5 rounded-full text-[10px] font-bold text-zinc-400 transition-all">
+                            <ExternalLink size={10} /> {src.title || 'Source'}
+                          </a>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               </RevealSection>
@@ -317,7 +354,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
              <RevealSection>
                 <div className="relative group">
                    <div className="w-40 h-40 bg-zinc-900 rounded-[3rem] overflow-hidden border border-white/10 shadow-2xl">
-                      {userAvatar ? <img src={userAvatar} className="w-full h-full object-cover" /> : <User size={56} className="m-12 text-zinc-800" />}
+                      {userAvatar ? <img src={userAvatar} className="w-full h-full object-cover" alt="Avatar" /> : <User size={56} className="m-12 text-zinc-800" />}
                    </div>
                    <button onClick={() => avatarInputRef.current?.click()} className="absolute -bottom-3 -right-3 bg-white text-black p-4 rounded-2xl shadow-2xl hover:scale-110 active:scale-90 transition-all">
                      <Camera size={20} />
