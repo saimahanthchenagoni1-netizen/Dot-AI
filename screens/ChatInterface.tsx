@@ -8,8 +8,6 @@ import {
 } from 'lucide-react';
 import { GoogleGenAI } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-
 interface Message {
   id: string;
   role: 'user' | 'ai';
@@ -160,6 +158,9 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
     const text = (overrideInput || input).trim();
     if (!text && !image) return;
 
+    // Lazy initialization of AI to prevent top-level crashes
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+
     setViewMode('chat');
     const userMsg: Message = {
       id: Date.now().toString(),
@@ -226,7 +227,8 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
         }]);
       }
     } catch (error) {
-      setMessages(prev => [...prev, { id: 'err', role: 'ai', text: "I encountered an error. Please try again.", timestamp: new Date().toISOString() }]);
+      console.error(error);
+      setMessages(prev => [...prev, { id: 'err', role: 'ai', text: "I encountered an error. Please check your API key and try again.", timestamp: new Date().toISOString() }]);
     } finally {
       setLoading(false);
     }
